@@ -20,7 +20,7 @@ namespace DiegoG.TelegramBot
 
         public string? Alias => null;
 
-        public BotCommandProcessor Processor { get; set; }
+        public TelegramBotCommandClient Processor { get; set; }
 
         public virtual Task<CommandResponse> Action(BotCommandArguments args) => Task.FromResult(new CommandResponse(args, false, "Hello! Welcome! Please type /help"));
 

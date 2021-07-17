@@ -20,7 +20,7 @@ namespace DiegoG.TelegramBot.Types
         {
             ArgString = argString;
             User = user;
-            Arguments = BotCommandProcessor.SeparateArgs(argString);
+            Arguments = TelegramBotCommandClient.SeparateArgs(argString);
             Message = message;
             FromChat = message.Chat.Id;
         }

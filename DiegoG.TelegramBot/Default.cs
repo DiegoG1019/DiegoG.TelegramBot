@@ -19,11 +19,11 @@ namespace DiegoG.TelegramBot
 
         public IEnumerable<OptionDescription>? HelpOptions => null;
 
-        public virtual string Trigger => BotCommandProcessor.DefaultName;
+        public virtual string Trigger => TelegramBotCommandClient.DefaultName;
 
         public string? Alias => null;
 
-        public BotCommandProcessor Processor { get; set; }
+        public TelegramBotCommandClient Processor { get; set; }
 
         public abstract Task<CommandResponse> Action(BotCommandArguments args);
 

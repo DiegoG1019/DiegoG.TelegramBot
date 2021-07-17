@@ -30,7 +30,7 @@ namespace DiegoG.TelegramBot.Types
             ThrowIfDuplicateOrInvalid(trigger);
             dict.Add(trigger, cmd);
 
-            if(trigger is not BotCommandProcessor.DefaultName)
+            if(trigger is not TelegramBotCommandClient.DefaultName)
                 BotCommands.Add(new()
                 {
                     Command = trigger,

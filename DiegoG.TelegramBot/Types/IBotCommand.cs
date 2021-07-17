@@ -15,7 +15,7 @@ namespace DiegoG.TelegramBot.Types
         /// <summary>
         /// The Bot Command Processor this instance of the command is tied to
         /// </summary>
-        BotCommandProcessor Processor { get; set; }
+        TelegramBotCommandClient Processor { get; set; }
 
         /// <summary>
         /// The action to be taken when the command is invoked. Please be aware that the engine will try to remove the slash

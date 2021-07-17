@@ -17,7 +17,7 @@ namespace DiegoG.TelegramBot
         public string HelpExplanation => "Returns a string explaining the uses of a specific command.";
         public string HelpUsage => "[Command]";
         public IEnumerable<OptionDescription>? HelpOptions => null;
-        public BotCommandProcessor Processor { get; set; }
+        public TelegramBotCommandClient Processor { get; set; }
 
 
         private static string GetAlias(IBotCommand cmd) => cmd.Alias is not null ? $" ({cmd.Alias})" : "";
@@ -54,7 +54,7 @@ namespace DiegoG.TelegramBot
             return string.Format(HelpFormat, c.Trigger, GetAlias(c), c.HelpExplanation, c.HelpUsage, GetHelpExplanation(c));
         });
 
-        public Task<string> GetGlobalHelp() => Task.Run(() => Task.FromResult(string.Join("\n", Processor.CommandList.Where(s => s.Trigger is not BotCommandProcessor.DefaultName).Select(command => $"{command.Trigger}{GetAlias(command)} - {command.HelpUsage}"))));
+        public Task<string> GetGlobalHelp() => Task.Run(() => Task.FromResult(string.Join("\n", Processor.CommandList.Where(s => s.Trigger is not TelegramBotCommandClient.DefaultName).Select(command => $"{command.Trigger}{GetAlias(command)} - {command.HelpUsage}"))));
 
         public virtual Task<CommandResponse> ActionReply(BotCommandArguments args) => Task.FromResult(new CommandResponse(false));
 

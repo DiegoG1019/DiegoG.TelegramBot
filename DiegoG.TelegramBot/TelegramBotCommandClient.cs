@@ -19,7 +19,7 @@ using System.Net.Http;
 
 namespace DiegoG.TelegramBot
 {
-    public partial class BotCommandProcessor : TelegramBotClient, ITelegramBotClient
+    public partial class TelegramBotCommandClient : TelegramBotClient, ITelegramBotClient
     {
         const string q = "\"";
         public const string DefaultName = "___default";
@@ -44,7 +44,7 @@ namespace DiegoG.TelegramBot
         /// <param name="apiSaturation">The maximum number of request the MessageQueue can send per minute</param>
         /// <param name="bots">A bot to subscribe onto, if you decide to leave blank, please make sure to manually subscribe <see cref="MessageHandler(object?, Telegram.Bot.Args.MessageEventArgs)"/> to your bots' OnMessage event </param>
         /// <param name="config"></param>
-        public BotCommandProcessor(string token, int apiSaturation, BotKey key = BotKey.Any, Config? config = null, Func<Message, bool>? messageFilter = null, CommandProcessorUpdateHandler? updateHandler = null, HttpClient? client = null, string? baseUrl = null) : base(token, client, baseUrl)
+        public TelegramBotCommandClient(string token, int apiSaturation, BotKey key = BotKey.Any, Config? config = null, Func<Message, bool>? messageFilter = null, CommandProcessorUpdateHandler? updateHandler = null, HttpClient? client = null, string? baseUrl = null) : base(token, client, baseUrl)
         {
             Cfg = config ?? new();
             MessageFilter = messageFilter ?? (m => true);

@@ -17,8 +17,8 @@ namespace DiegoG.TelegramBot
         public UpdateType[]? AllowedUpdates { get; init; }
 
         public virtual Task HandleUpdate(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
-            => botClient is not BotCommandProcessor bot
-                ? throw new InvalidOperationException($"Cannot handle the updates of bots clients that are not of type {typeof(BotCommandProcessor)}")
+            => botClient is not TelegramBotCommandClient bot
+                ? throw new InvalidOperationException($"Cannot handle the updates of bots clients that are not of type {typeof(TelegramBotCommandClient)}")
                 : update.Type switch
                 {
                     UpdateType.Unknown => Task.CompletedTask,

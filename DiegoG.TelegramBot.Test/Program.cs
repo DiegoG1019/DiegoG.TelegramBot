@@ -19,7 +19,7 @@ namespace DiegoG.TelegramBot.Test
                 .WriteTo.Console()
                 .CreateLogger();
 
-            var proc = new BotCommandProcessor(CheapTacticGitIgnore.DGSandboxApiKey, 30);
+            var proc = new TelegramBotCommandClient(CheapTacticGitIgnore.DGSandboxApiKey, 30);
             
             Log.Information($"Connected to {await proc.EnqueueBotFunc(b => b.GetMeAsync())}");
 
@@ -100,7 +100,7 @@ namespace DiegoG.TelegramBot.Test
     [BotCommand]
     class AsyncGetTest : IBotCommand
     {
-        public BotCommandProcessor Processor { get; set; }
+        public TelegramBotCommandClient Processor { get; set; }
 
         public string HelpExplanation => "Tests the Get queued requests";
 

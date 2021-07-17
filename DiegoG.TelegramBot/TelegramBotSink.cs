@@ -23,7 +23,7 @@ namespace DiegoG.TelegramBot
         /// <summary>
         /// Due to Telegram's Rate Limiting, it is not recommended to sink anything below `Information` events
         /// </summary>
-        public static LoggerConfiguration TelegramBot(this LoggerSinkConfiguration loggerConfiguration, ChatId chatid, BotCommandProcessor botclient, LogEventLevel level = LogEventLevel.Information, string? hashtag = null)
+        public static LoggerConfiguration TelegramBot(this LoggerSinkConfiguration loggerConfiguration, ChatId chatid, TelegramBotCommandClient botclient, LogEventLevel level = LogEventLevel.Information, string? hashtag = null)
             => loggerConfiguration.Sink(new TelegramBotSink(chatid, botclient, level, hashtag));
     }
 
@@ -32,7 +32,7 @@ namespace DiegoG.TelegramBot
     /// </summary>
     public class TelegramBotSink : ILogEventSink
     {
-        private readonly BotCommandProcessor Client;
+        private readonly TelegramBotCommandClient Client;
         private readonly ChatId Id;
         private readonly ConcurrentQueue<string> MessageQueue = new();
         private readonly Thread DequeueThread;
@@ -41,7 +41,7 @@ namespace DiegoG.TelegramBot
         private readonly string? Hashtag;
         private bool AllowNewMessages = true;
 
-        public TelegramBotSink(ChatId id, BotCommandProcessor client, LogEventLevel level, string? hashtag)
+        public TelegramBotSink(ChatId id, TelegramBotCommandClient client, LogEventLevel level, string? hashtag)
         {
             Id = id;
             Client = client;
