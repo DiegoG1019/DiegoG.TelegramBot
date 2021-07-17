@@ -11,11 +11,15 @@ using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Extensions.Polling;
 using static DiegoG.TelegramBot.MessageQueue;
+using System.Threading;
+using Telegram.Bot.Exceptions;
+using System.Net.Http;
 
 namespace DiegoG.TelegramBot
 {
-    public class BotCommandProcessor
+    public partial class BotCommandProcessor : TelegramBotClient, ITelegramBotClient
     {
         const string q = "\"";
         public const string DefaultName = "___default";
@@ -24,17 +28,15 @@ namespace DiegoG.TelegramBot
 
         public static string[] SeparateArgs(string input) => Regex.Split(input, $@"{q}([^{q}]*){q}|(\S+)").Where(s => !string.IsNullOrWhiteSpace(s)).ToArray();
 
-
-        private BotKey BotKey { get; init; }
-        private Config Cfg;
-        private Dictionary<User, IBotCommand> HeldCommands { get; } = new();
+        private readonly BotKey BotKey;
+        private readonly Config Cfg;
         private readonly Func<Message, bool> MessageFilter;
+        private readonly Dictionary<User, IBotCommand> HeldCommands = new();
 
         public event EventHandler<BotCommandArguments>? CommandCalled;
-        public MessageQueue MessageQueue { get; init; }
-        public BotCommandList CommandList { get; init; }
-        public TelegramBotClient BotClient { get; init; }
-        public string BotHandle { get; init; }
+        public MessageQueue MessageQueue { get; private set; }
+        public BotCommandList CommandList { get; private set; }
+        public string BotHandle { get; private set; }
 
         /// <summary>
         /// Initializes the BotCommandProcessor
@@ -42,18 +44,16 @@ namespace DiegoG.TelegramBot
         /// <param name="apiSaturation">The maximum number of request the MessageQueue can send per minute</param>
         /// <param name="bots">A bot to subscribe onto, if you decide to leave blank, please make sure to manually subscribe <see cref="MessageHandler(object?, Telegram.Bot.Args.MessageEventArgs)"/> to your bots' OnMessage event </param>
         /// <param name="config"></param>
-        public BotCommandProcessor(TelegramBotClient bot, int apiSaturation, BotKey key = BotKey.Any, Config? config = null, Func<Message, bool>? messageFilter = null)
+        public BotCommandProcessor(string token, int apiSaturation, BotKey key = BotKey.Any, Config? config = null, Func<Message, bool>? messageFilter = null, CommandProcessorUpdateHandler? updateHandler = null, HttpClient? client = null, string? baseUrl = null) : base(token, client, baseUrl)
         {
             Cfg = config ?? new();
             MessageFilter = messageFilter ?? (m => true);
-            
+
             BotKey = key;
 
             CommandList = new();
 
-            BotClient = bot;
-
-            foreach (var c in TypeLoader.InstanceTypesWithAttribute<IBotCommand>(typeof(BotCommandAttribute), 
+            foreach (var c in TypeLoader.InstanceTypesWithAttribute<IBotCommand>(typeof(BotCommandAttribute),
                 ValidateCommandAttribute,
                 AppDomain.CurrentDomain.GetAssemblies()))
             {
@@ -67,16 +67,20 @@ namespace DiegoG.TelegramBot
                 CommandList.Add(new Start() { Processor = this });
             if (!CommandList.HasCommand(DefaultName))
                 CommandList.Add(new Default_() { Processor = this });
-            
-            MessageQueue = new(bot, apiSaturation);
-            bot.OnMessage += MessageHandler;
 
-            if (Cfg.AddBotMeCommandInfo) 
+            MessageQueue = new(this, apiSaturation);
+
+            this.StartReceiving(updateHandler ?? new CommandProcessorUpdateHandler(), default);
+
+            if (Cfg.AddBotMeCommandInfo)
                 MessageQueue.EnqueueAction(async b => await b.SetMyCommandsAsync(CommandList.AvailableCommands));
 
-            BotHandle = bot.GetMeAsync().Result.Username;
+            BotHandle = GetMeAsync().Result.Username;
         }
-        
+
+        public void EnqueueBotAction(BotAction action) => MessageQueue.EnqueueAction(action);
+        public Task<TResult> EnqueueBotFunc<TResult>(BotFunc<TResult> func) => MessageQueue.EnqueueFunc(func);
+
         private bool ValidateCommandAttribute(Type type, Attribute[] attributes)
         {
             if (BotKey is BotKey.Any)
@@ -107,24 +111,23 @@ namespace DiegoG.TelegramBot
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public async void MessageHandler(object? sender, Telegram.Bot.Args.MessageEventArgs e)
+        public async Task MessageHandler(Message msg)
         {
-            var user = e.Message.From;
-            var client = sender as TelegramBotClient;
+            var user = msg.From;
             Log.Debug($"Message from user {user}, processing");
-            if (!MessageFilter(e.Message))
+            if (!MessageFilter(msg))
             {
                 Log.Debug($"Message from user {user} filtered out");
                 return;
             }
 
-            var command = e.Message.Text;
+            var command = msg.Text;
             try
             {
                 if (Cfg.ProcessNormalMessages || command.StartsWith("/"))
                 {
                     command = command.Replace(BotHandle, "");
-                    var cr = await Call(command, user, e.Message);
+                    var cr = await Call(command, user, msg);
 
                     foreach (var act in cr)
                         MessageQueue.EnqueueAction(act);
@@ -136,7 +139,7 @@ namespace DiegoG.TelegramBot
             {
                 if (command.StartsWith("/"))
                 {
-                    MessageQueue.EnqueueAction(b => b.SendTextMessageAsync(e.Message.Chat.Id, $"Invalid Command: {exc.Message}", ParseMode.Default, null, false, false, e.Message.MessageId));
+                    MessageQueue.EnqueueAction(b => b.SendTextMessageAsync(msg.Chat.Id, $"Invalid Command: {exc.Message}", ParseMode.Default, null, false, false, msg.MessageId));
                     Log.Debug($"Invalid Command {command} from user {user}");
                 }
             }
@@ -144,7 +147,7 @@ namespace DiegoG.TelegramBot
             {
                 if (command.StartsWith("/"))
                 {
-                    MessageQueue.EnqueueAction(b => b.SendTextMessageAsync(e.Message.Chat.Id, $"Invalid Command Argument: {exc.Message}", ParseMode.Default, null, false, false, e.Message.MessageId));
+                    MessageQueue.EnqueueAction(b => b.SendTextMessageAsync(msg.Chat.Id, $"Invalid Command Argument: {exc.Message}", ParseMode.Default, null, false, false, msg.MessageId));
                     Log.Debug($"Invalid Command Arguments {command} from user {user}");
                 }
             }
@@ -207,6 +210,5 @@ namespace DiegoG.TelegramBot
                 throw ex;
             }
         }
-
     }
 }

@@ -19,12 +19,9 @@ namespace DiegoG.TelegramBot.Test
                 .WriteTo.Console()
                 .CreateLogger();
 
-            var bot = new TelegramBotClient(CheapTacticGitIgnore.DGSandboxApiKey);
-            var proc = new BotCommandProcessor(bot, 30);
-
-            bot.StartReceiving();
-
-            Log.Information($"Connected to {await bot.GetMeAsync()}");
+            var proc = new BotCommandProcessor(CheapTacticGitIgnore.DGSandboxApiKey, 30);
+            
+            Log.Information($"Connected to {await proc.EnqueueBotFunc(b => b.GetMeAsync())}");
 
             while(true)
                 await Task.Delay(500);
