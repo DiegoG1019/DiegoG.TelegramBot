@@ -78,10 +78,7 @@ namespace DiegoG.TelegramBot.Test
                             Name = "1_2_2",
                             Condition = c => c.Name is not null,
                             StepEntered = async c => "You're finally at the last step! Give the word, and we can end this, you and I! For Azeroth! For the Alliance!",
-                            Response = async (c, a) =>
-                            {
-                                return new Response("Huzzah! Success!", Response.ResponseAction.End);
-                            },
+                            Response = async (c, a) => new Response("Huzzah! Success!", Response.ResponseAction.End),
                         }
                     }
                 }
