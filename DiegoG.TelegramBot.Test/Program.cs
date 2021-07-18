@@ -4,9 +4,11 @@ using DiegoG.Utilities;
 using Serilog;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace DiegoG.TelegramBot.Test
 {
@@ -14,6 +16,8 @@ namespace DiegoG.TelegramBot.Test
     {
         static async Task Main(string[] args)
         {
+            SignCallbackData_Test();
+
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Verbose()
                 .WriteTo.Console()
@@ -25,6 +29,72 @@ namespace DiegoG.TelegramBot.Test
 
             while(true)
                 await Task.Delay(500);
+        }
+
+        public static void SignCallbackData_Test()
+        {
+            var cmd = new CallbackQueryTest();
+
+            List<string> signResults = new()
+            {
+                cmd.SignCallbackData("aabbcc"),
+                cmd.SignCallbackData("aab||\\bcc"),
+                cmd.SignCallbackData("aab||\\||\\bcc||\\"),
+                cmd.SignCallbackData("aabbcc||\\||\\"),
+                cmd.SignCallbackData("||\\aabbcc"),
+                "aabbcc",
+            };
+
+            List<string> getTriggerResults = new(signResults.Count);
+
+            foreach(var s in signResults)
+            {
+                new CallbackQuery() { Data = s }.GetTriggerFromSignature(out var t, out var d);
+                getTriggerResults.Add($" {t} \\\\ {d}");
+            }
+
+            for(int i = 0; i < signResults.Count; i++)
+                Console.WriteLine($"SignCallbackData_Test {i}: {signResults[i]} / {getTriggerResults[i]}");
+        }
+    }
+
+    [BotCommand]
+    class CallbackQueryTest : IBotCommand
+    {
+        public TelegramBotCommandClient Processor { get; set; }
+
+        public string HelpExplanation => "Tests DiegoG.TelegramBot's functionality regarding Callback Queries";
+
+        public string HelpUsage => Trigger;
+
+        public IEnumerable<OptionDescription> HelpOptions => null;
+
+        public string Trigger => "/cbq_test";
+
+        public string Alias => null;
+
+        private const string Test = "ABCDEFG";
+
+        public async Task<CommandResponse> Action(BotCommandArguments args)
+        {
+            return new(false, b => b.SendTextMessageAsync(args.FromChat, "lmao",
+                replyMarkup: new InlineKeyboardMarkup(from s in Test select new InlineKeyboardButton() { Text = s.ToString(), CallbackData = this.SignCallbackData("lmao") })));
+        }
+
+        public Task AnswerCallbackQuery(User user, CallbackQuery query)
+        {
+            Processor.EnqueueBotAction(b => b.SendTextMessageAsync(query.Message?.Chat.Id ?? query.From.Id, "Hey! Why'd you press that?"));
+            return Task.CompletedTask;
+        }
+
+        public Task<CommandResponse> ActionReply(BotCommandArguments args)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Cancel(User user)
+        {
+            throw new NotImplementedException();
         }
     }
 

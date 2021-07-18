@@ -39,22 +39,36 @@ namespace DiegoG.TelegramBot.Types
         /// Explains the purpose and effects of the command
         /// </summary>
         string HelpExplanation { get; }
+        
         /// <summary>
         /// Explains the usage and syntax of the command - CommandName [Argument] (OptionalArgument)
         /// </summary>
         string HelpUsage { get; }
+        
         /// <summary>
         /// Provides detailed information of each option setting. Set to null to ignore
         /// </summary>
         IEnumerable<OptionDescription>? HelpOptions { get; }
+        
         /// <summary>
         /// Defines the trigger of the command (Case Insensitive)
         /// </summary>
         string Trigger { get; }
+        
         /// <summary>
         /// An alternate, usually shortened way to call the command. Set to null to ignore, can not be duplicate with any of the aliases or triggers
         /// </summary>
         string? Alias { get; }
+
+        /// <summary>
+        /// Defines behavior to take when a CallbackQuery bound to this command is issued
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="query"></param>
+        /// <returns></returns>
+        Task AnswerCallbackQuery(User user, CallbackQuery query)
+            => Task.CompletedTask;
+
         /// <summary>
         /// Used to validate the command upon load
         /// </summary>

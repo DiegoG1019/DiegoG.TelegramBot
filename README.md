@@ -106,6 +106,8 @@ public interface IBotCommand
 	
 	string? Alias { get; }
 	
+	Task AnswerCallbackQuery(User user, CallbackQuery query); //Has a default implementation
+	
 	public bool Validate([NotNullWhen(false)]out string? message); //Has a default implementation
 }
 ```
@@ -147,6 +149,16 @@ public sealed record BotCommandArguments
 - `string Alias` A secondary, optional string to be used as a secondary, usually shorter trigger for the command. Also Case Insensitive. Set to `null` to ignore.
 
 - `bool Validate(out string? message)` A command that is called when the command is instantiated. Responsible for making sure everything is *just* right for the Command. `message` should only be used in case of failure (returning `false`), as hinted by the `[NotNullWhen(false)]` attribute
+
+- `Task AnswerCallbackQuery(User user, CallbackQuery query)` When a CallbackQuery bound to this command is received, this method is called. Usually, a CallbackQuery is known to be bound to this command when it's signed by it using the `SignCallbackData` extension method (You'll perhaps have to write `this.SignCallbackData` for it to work)
+
+### Callback Queries
+Callback Query handling for commands is supported!
+All you have to do is call the `SignCallbackData` extension method and put the result in the QueryData, and add your desired behaviour by overriding `IBotCommand`'s `AnswerCallbackQuery` method
+Everything else will be done by the default implementations of TelegramBotCommandClient update handlers
+```C#
+SignCallbackData(this IBotCommand botCommand, string? CallbackData = null)
+```
 
 ### Default Command 
 ```C#
@@ -215,6 +227,12 @@ public record Response(string ResponseValue, Response.ResponseAction Action)
     { Advance, Continue, End }
 }
 ```
+
+### Deriving from TelegramBotCommandClient
+
+Despite my attempts at increasingly making the library easier for general purpose work and making the entire thing play easier with the whole concept of individual uncoupled commands and interaction sequences, there will inevitably be a time where you simply would rather change certain aspects of the class, or replacing them altogether. Bearing this in mind, I made all the Update Handlers `virtual`, which means they can be safely overriden.
+
+Furthermore, if this isn't enough, the `UpdateHandler` itself also has its method marked as `virtual`.
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.

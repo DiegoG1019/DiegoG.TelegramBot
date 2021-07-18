@@ -16,6 +16,7 @@ using static DiegoG.TelegramBot.MessageQueue;
 using System.Threading;
 using Telegram.Bot.Exceptions;
 using System.Net.Http;
+using Telegram.Bot.Types.Payments;
 
 namespace DiegoG.TelegramBot
 {
@@ -107,11 +108,112 @@ namespace DiegoG.TelegramBot
         }
 
         /// <summary>
-        /// This method is automatically subscribed to Bot.OnMessage if set to true (the default) in BotCommandProcessor.Config fed to this instance
+        /// Currently this does nothing
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public async Task MessageHandler(Message msg)
+        /// <returns></returns>
+        protected virtual Task ChatMemberHandler(ChatMemberUpdated chatMember)
+            => Task.CompletedTask;
+
+        /// <summary>
+        /// Currently this does nothing
+        /// </summary>
+        /// <returns></returns>
+        protected virtual Task MyChatMemberHandler(ChatMemberUpdated chatMember)
+            => Task.CompletedTask;
+
+        /// <summary>
+        /// Currently this does nothing
+        /// </summary>
+        /// <returns></returns>
+        protected virtual Task PollAnswerHandler(PollAnswer pollAnswer)
+            => Task.CompletedTask;
+
+        /// <summary>
+        /// Currently this does nothing
+        /// </summary>
+        /// <returns></returns>
+        protected virtual Task PollHandler(Poll poll)
+            => Task.CompletedTask;
+
+        /// <summary>
+        /// Currently this does nothing
+        /// </summary>
+        /// <returns></returns>
+        protected virtual Task PreCheckoutHandler(PreCheckoutQuery query)
+            => Task.CompletedTask;
+
+        /// <summary>
+        /// Currently this does nothing
+        /// </summary>
+        /// <returns></returns> 
+        protected virtual Task ShippingQueryHandler(ShippingQuery query)
+            => Task.CompletedTask;
+
+        /// <summary>
+        /// Currently this does nothing
+        /// </summary>
+        /// <returns></returns>
+        protected virtual Task EditedChannelPostHandler(Message newPost)
+            => Task.CompletedTask;
+
+        /// <summary>
+        /// Currently this does nothing
+        /// </summary>
+        /// <returns></returns>
+        protected virtual Task ChannelPostHandler(Message post)
+            => Task.CompletedTask;
+
+        /// <summary>
+        /// Currently this does nothing
+        /// </summary>
+        /// <returns></returns>
+        protected virtual Task EditedMessageHandler(Message newMessage)
+            => Task.CompletedTask;
+
+        /// <summary>
+        /// Currently this does nothing
+        /// </summary>
+        /// <returns></returns>
+        protected virtual Task ChosenInlineResultHandler(ChosenInlineResult choice)
+            => Task.CompletedTask;
+
+        /// <summary>
+        /// Currently this does nothing
+        /// </summary>
+        /// <returns></returns>
+        protected virtual Task InlineQueryHandler(InlineQuery query)
+            => Task.CompletedTask;
+
+        /// <summary>
+        /// Currently this does nothing
+        /// </summary>
+        /// <returns></returns>
+        protected virtual Task UnknownUpdateHandler()
+            => Task.CompletedTask;
+
+        /// <summary>
+        /// Currently this pipes CallbackQueries into commands using the CallbackData in them
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
+        protected virtual Task CallbackQueryHandler(CallbackQuery query)
+            => Task.Run(()=>
+            {
+                if(query.GetTriggerFromSignature(out var trigger, out var dat))
+                {
+                    if (CommandList.HasCommand(trigger))
+                    {
+                        query.Data = dat;
+                        CommandList[trigger].AnswerCallbackQuery(query.From, query);
+                    }
+                }
+            });
+
+        /// <summary>
+        /// Currently this is responsible for piping all user messages into the command execution engine
+        /// </summary>
+        /// <returns></returns>
+        protected virtual async Task MessageHandler(Message msg)
         {
             var user = msg.From;
             Log.Debug($"Message from user {user}, processing");
@@ -188,10 +290,12 @@ namespace DiegoG.TelegramBot
                 if (HeldCommands.ContainsKey(args.User))
                     return await ReplyCall(args);
 
+                var x = CommandList.HasCommand(args.Arguments[0]);
+
                 var cmd = CommandList.HasCommand(args.Arguments[0]) ? CommandList[args.Arguments[0]] : CommandList[DefaultName];
 
                 var t = cmd.Action(args);
-                CommandCalled?.Invoke(null, args);
+                CommandCalled?.Invoke(this, args);
 
                 var (result, hold) = await t;
 
