@@ -34,7 +34,10 @@ This class integrates reflection-based command loading, API Request Queueing, as
 - `Config? config` represents certain configuration parameters for the CommandClient. Defaults to null for the default values.
  
   - `ProcessNormalMessages` states whether the bot should process all messages, or if false, only those starting with a `/`.
-  - `AddBotMeCommandInfo` states whether the bot should automatically upload info about its commands to telegram ![AddBotMeCommandInfo Image Example](https://github.com/DiegoG1019/DiegoG.TelegramBot/blob/master/repo_assets/AddBotMeCommandInfo%20Image%20Example.png)
+  - `AddBotMeCommandInfo` states whether the bot should automatically upload info about its commands to telegram 
+  
+   ![AddBotMeCommandInfo Image Example](https://github.com/DiegoG1019/DiegoG.TelegramBot/blob/master/repo_assets/AddBotMeCommandInfo%20Image%20Example.png)
+   
 ```C# 
 new Config(bool ProcessNormalMessages = true, bool AddBotMeCommandInfo = true)
 ```
