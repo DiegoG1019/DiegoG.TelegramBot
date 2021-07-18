@@ -197,16 +197,16 @@ namespace DiegoG.TelegramBot
         /// <param name="query"></param>
         /// <returns></returns>
         protected virtual Task CallbackQueryHandler(CallbackQuery query)
-            => Task.Run(()=>
+            => Task.Run(() =>
             {
-                if(query.GetTriggerFromSignature(out var trigger, out var dat))
+                if (query.GetTriggerFromSignature(out var trigger, out var dat) && CommandList.HasCommand(trigger))
                 {
-                    if (CommandList.HasCommand(trigger))
-                    {
-                        query.Data = dat;
-                        CommandList[trigger].AnswerCallbackQuery(query.From, query);
-                    }
+                    Log.Verbose($"Piping CallbackQuery to {trigger} with \"{dat}\"");
+                    query.Data = dat;
+                    CommandList[trigger].AnswerCallbackQuery(query.From, query);
+                    return;
                 }
+                Log.Verbose($"CallbackQuery has no trigger bound to it, ignoring");
             });
 
         /// <summary>

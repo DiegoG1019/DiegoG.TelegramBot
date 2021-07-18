@@ -7,7 +7,7 @@
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <Authors>DiegoG1019</Authors>
     <Description>A small library to facilitate some of the processes to creating bots for telegram</Description>
-    <Version>1.7.1</Version>
+    <Version>1.7.2</Version>
   </PropertyGroup>
 
   <ItemGroup>

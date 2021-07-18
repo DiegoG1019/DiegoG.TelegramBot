@@ -2,12 +2,12 @@
 A Library to simplify Bot Command building and Conversation definition
 
 ## Installation
-[NuGet v.1.7.1](https://www.nuget.org/packages/DiegoG.TelegramBot/)
+[NuGet v.1.7.2](https://www.nuget.org/packages/DiegoG.TelegramBot/)
 ```nuget
-Install-Package DiegoG.TelegramBot -Version 1.7.1
+Install-Package DiegoG.TelegramBot -Version 1.7.2
 ```
 ```powershell
-dotnet add package DiegoG.TelegramBot --version 1.7.1
+dotnet add package DiegoG.TelegramBot --version 1.7.2
 ```
 
 ## Classes and Usage

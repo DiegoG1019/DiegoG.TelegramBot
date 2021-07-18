@@ -16,8 +16,6 @@ namespace DiegoG.TelegramBot.Test
     {
         static async Task Main(string[] args)
         {
-            SignCallbackData_Test();
-
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Verbose()
                 .WriteTo.Console()
@@ -78,7 +76,7 @@ namespace DiegoG.TelegramBot.Test
         public async Task<CommandResponse> Action(BotCommandArguments args)
         {
             return new(false, b => b.SendTextMessageAsync(args.FromChat, "lmao",
-                replyMarkup: new InlineKeyboardMarkup(from s in Test select new InlineKeyboardButton() { Text = s.ToString(), CallbackData = this.SignCallbackData("lmao") })));
+                replyMarkup: new InlineKeyboardMarkup(from s in Test select new InlineKeyboardButton() { Text = s.ToString(), CallbackData = this.SignCallbackData("2") })));
         }
 
         public Task AnswerCallbackQuery(User user, CallbackQuery query)
