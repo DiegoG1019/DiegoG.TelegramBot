@@ -2,12 +2,12 @@
 A Library to simplify Bot Command building and Conversation definition
 
 ## Installation
-[NuGet v.1.7.2](https://www.nuget.org/packages/DiegoG.TelegramBot/)
+[NuGet v.1.7.3](https://www.nuget.org/packages/DiegoG.TelegramBot/)
 ```nuget
-Install-Package DiegoG.TelegramBot -Version 1.7.2
+Install-Package DiegoG.TelegramBot -Version 1.7.3
 ```
 ```powershell
-dotnet add package DiegoG.TelegramBot --version 1.7.2
+dotnet add package DiegoG.TelegramBot --version 1.7.3
 ```
 
 ## Classes and Usage
@@ -106,7 +106,7 @@ public interface IBotCommand
 	
 	string? Alias { get; }
 	
-	Task AnswerCallbackQuery(User user, CallbackQuery query); //Has a default implementation
+	Task AnswerCallbackQuery(User user, Chat? chat, CallbackQuery query); //Has a default implementation
 	
 	public bool Validate([NotNullWhen(false)]out string? message); //Has a default implementation
 }

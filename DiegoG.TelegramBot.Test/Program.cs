@@ -23,7 +23,7 @@ namespace DiegoG.TelegramBot.Test
 
             var proc = new TelegramBotCommandClient(CheapTacticGitIgnore.DGSandboxApiKey, 30);
             
-            Log.Information($"Connected to {await proc.EnqueueBotFunc(b => b.GetMeAsync())}");
+            Log.Information($"Connected to {proc.BotHandle}");
 
             while(true)
                 await Task.Delay(500);
@@ -79,7 +79,7 @@ namespace DiegoG.TelegramBot.Test
                 replyMarkup: new InlineKeyboardMarkup(from s in Test select new InlineKeyboardButton() { Text = s.ToString(), CallbackData = this.SignCallbackData("2") })));
         }
 
-        public Task AnswerCallbackQuery(User user, CallbackQuery query)
+        public Task AnswerCallbackQuery(User user, Chat chat, CallbackQuery query)
         {
             Processor.EnqueueBotAction(b => b.SendTextMessageAsync(query.Message?.Chat.Id ?? query.From.Id, "Hey! Why'd you press that?"));
             return Task.CompletedTask;

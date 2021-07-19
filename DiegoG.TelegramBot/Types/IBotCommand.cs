@@ -66,7 +66,7 @@ namespace DiegoG.TelegramBot.Types
         /// <param name="user"></param>
         /// <param name="query"></param>
         /// <returns></returns>
-        Task AnswerCallbackQuery(User user, CallbackQuery query)
+        Task AnswerCallbackQuery(User user, Chat? chat, CallbackQuery query)
             => Task.CompletedTask;
 
         /// <summary>

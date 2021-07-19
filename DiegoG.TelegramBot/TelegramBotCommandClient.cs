@@ -203,7 +203,7 @@ namespace DiegoG.TelegramBot
                 {
                     Log.Verbose($"Piping CallbackQuery to {trigger} with \"{dat}\"");
                     query.Data = dat;
-                    CommandList[trigger].AnswerCallbackQuery(query.From, query);
+                    CommandList[trigger].AnswerCallbackQuery(query.From, query.Message?.Chat, query);
                     return;
                 }
                 Log.Verbose($"CallbackQuery has no trigger bound to it, ignoring");
