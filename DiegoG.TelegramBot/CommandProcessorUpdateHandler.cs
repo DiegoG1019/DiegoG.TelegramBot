@@ -16,7 +16,7 @@ namespace DiegoG.TelegramBot
     {
         public class CommandProcessorUpdateHandler : IUpdateHandler
         {
-            public UpdateType[]? AllowedUpdates { get; init; }
+            public UpdateType[]? AllowedUpdates { get; init; } = Array.Empty<UpdateType>();
 
             public virtual Task HandleUpdate(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
                 => botClient is not TelegramBotCommandClient bot
