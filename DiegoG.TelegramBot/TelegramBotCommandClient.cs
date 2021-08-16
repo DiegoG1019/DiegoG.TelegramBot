@@ -20,12 +20,12 @@ using Telegram.Bot.Types.Payments;
 
 namespace DiegoG.TelegramBot
 {
+    public record Config(bool ProcessNormalMessages = true, bool AddBotMeCommandInfo = true) { }
     public partial class TelegramBotCommandClient : TelegramBotClient, ITelegramBotClient
     {
         const string q = "\"";
         public const string DefaultName = "___default";
 
-        public record Config(bool ProcessNormalMessages = true, bool AddBotMeCommandInfo = true) { }
 
         public static string[] SeparateArgs(string input) => Regex.Split(input, $@"{q}([^{q}]*){q}|(\S+)").Where(s => !string.IsNullOrWhiteSpace(s)).ToArray();
 
