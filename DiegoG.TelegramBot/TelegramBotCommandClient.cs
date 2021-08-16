@@ -20,7 +20,7 @@ using Telegram.Bot.Types.Payments;
 
 namespace DiegoG.TelegramBot
 {
-    public record Config(bool ProcessNormalMessages = true, bool AddBotMeCommandInfo = true) { }
+    public record Config(bool ProcessNormalMessages = true, bool AddBotMeCommandInfo = true, bool AcceptMultiWordTriggers = false) { }
     public partial class TelegramBotCommandClient : TelegramBotClient, ITelegramBotClient
     {
         const string q = "\"";
