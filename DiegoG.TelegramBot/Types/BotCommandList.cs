@@ -12,6 +12,7 @@ namespace DiegoG.TelegramBot.Types
     {
         private readonly SortedDictionary<string, IBotCommand> dict = new(new StringLenComp());
         private readonly List<BotCommand> BotCommands = new();
+        private readonly Config Cfg;
 
         public IEnumerable<BotCommand> AvailableCommands => BotCommands;
 
@@ -54,7 +55,7 @@ namespace DiegoG.TelegramBot.Types
                 throw new InvalidBotCommandException(cmd, "Command triggers or aliases cannot contain whitespace");
         }
 
-        internal BotCommandList() { }
+        internal BotCommandList(Config config) { Cfg = config; }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
