@@ -26,7 +26,7 @@ namespace DiegoG.TelegramBot.Types
             if (!cmd.Validate(out var msg))
                 throw new InvalidOperationException($"Unable to load command {cmd.Trigger}: {msg}");
             Count++;
-            var trigger = cmd.Trigger.ToLower();
+            var trigger = cmd.Trigger.Contains("/") ? cmd.Trigger.ToLower() : cmd.Trigger;
             ThrowIfDuplicateOrInvalid(trigger);
             dict.Add(trigger, cmd);
 
