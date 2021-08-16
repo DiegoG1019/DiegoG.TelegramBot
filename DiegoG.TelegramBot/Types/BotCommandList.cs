@@ -10,7 +10,6 @@ namespace DiegoG.TelegramBot.Types
 {
     public sealed class BotCommandList : IEnumerable<IBotCommand>
     {
-        private readonly Dictionary<string, IBotCommand> dict = new();
         private readonly SortedDictionary<string, IBotCommand> dict = new(new StringLenComp());
         private readonly List<BotCommand> BotCommands = new();
 
