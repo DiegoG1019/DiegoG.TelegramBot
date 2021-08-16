@@ -11,6 +11,7 @@ namespace DiegoG.TelegramBot.Types
     public sealed class BotCommandList : IEnumerable<IBotCommand>
     {
         private readonly Dictionary<string, IBotCommand> dict = new();
+        private readonly SortedDictionary<string, IBotCommand> dict = new(new StringLenComp());
         private readonly List<BotCommand> BotCommands = new();
 
         public IEnumerable<BotCommand> AvailableCommands => BotCommands;
@@ -57,6 +58,15 @@ namespace DiegoG.TelegramBot.Types
         internal BotCommandList() { }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        private class StringLenComp : IComparer<string>
+        {
+            public int Compare(string? x, string? y)
+            {
+                var r = x?.Length.CompareTo(y?.Length);
+                return r is not null and not 0 ? (int)r : x?.CompareTo(y) ?? 0;
+            }
+        }
     }
 
 }
