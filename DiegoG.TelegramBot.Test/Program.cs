@@ -21,7 +21,7 @@ namespace DiegoG.TelegramBot.Test
                 .WriteTo.Console()
                 .CreateLogger();
 
-            var proc = new TelegramBotCommandClient(CheapTacticGitIgnore.DGSandboxApiKey, 30, config: new(AcceptMultiWordTriggers: true));
+            var proc = new TelegramBotCommandClient(CheapTacticGitIgnore.DGSandboxApiKey, 30, config: new(true, true, true, true, false));
             
             Log.Information($"Connected to {proc.BotHandle}");
 
