@@ -21,7 +21,7 @@ namespace DiegoG.TelegramBot.Test
                 .WriteTo.Console()
                 .CreateLogger();
 
-            var proc = new TelegramBotCommandClient(CheapTacticGitIgnore.DGSandboxApiKey, 30);
+            var proc = new TelegramBotCommandClient(CheapTacticGitIgnore.DGSandboxApiKey, 30, config: new(AcceptMultiWordTriggers: true));
             
             Log.Information($"Connected to {proc.BotHandle}");
 
@@ -53,6 +53,99 @@ namespace DiegoG.TelegramBot.Test
 
             for(int i = 0; i < signResults.Count; i++)
                 Console.WriteLine($"SignCallbackData_Test {i}: {signResults[i]} / {getTriggerResults[i]}");
+        }
+    }
+
+    [BotCommand]
+    class CommandListMultiWordTestC : IBotCommand
+    {
+        public TelegramBotCommandClient Processor { get; set; }
+
+        public string HelpExplanation => "Tests the functionality of Multi Word Command Processing";
+
+        public string HelpUsage => "Try this command!";
+
+        public IEnumerable<OptionDescription> HelpOptions => null;
+
+        public string Trigger => "Hey there, I've some work for ya";
+
+        public string Alias => null;
+
+        public async Task<CommandResponse> Action(BotCommandArguments args)
+        {
+            return new CommandResponse(args.Message, false, "Oh god dammnit, I told you I'm done with that life!");
+        }
+
+        public Task<CommandResponse> ActionReply(BotCommandArguments args)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Cancel(User user)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    [BotCommand]
+    class CommandListMultiWordTestB : IBotCommand
+    {
+        public TelegramBotCommandClient Processor { get; set; }
+
+        public string HelpExplanation => "Tests the functionality of Multi Word Command Processing";
+
+        public string HelpUsage => "Try this command!";
+
+        public IEnumerable<OptionDescription> HelpOptions => null;
+
+        public string Trigger => "Hey there";
+
+        public string Alias => null;
+
+        public async Task<CommandResponse> Action(BotCommandArguments args)
+        {
+            return new CommandResponse(args.Message, false, "Wazzup");
+        }
+
+        public Task<CommandResponse> ActionReply(BotCommandArguments args)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Cancel(User user)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    [BotCommand]
+    class CommandListMultiWordTestA : IBotCommand
+    {
+        public TelegramBotCommandClient Processor { get; set; }
+
+        public string HelpExplanation => "Tests the functionality of Multi Word Command Processing";
+
+        public string HelpUsage => "Try this command!";
+
+        public IEnumerable<OptionDescription> HelpOptions => null;
+
+        public string Trigger => "Hey there, what's up?";
+
+        public string Alias => null;
+
+        public async Task<CommandResponse> Action(BotCommandArguments args)
+        {
+            return new CommandResponse(args.Message, false, "Nothing much, hbu");
+        }
+
+        public Task<CommandResponse> ActionReply(BotCommandArguments args)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Cancel(User user)
+        {
+            throw new NotImplementedException();
         }
     }
 
