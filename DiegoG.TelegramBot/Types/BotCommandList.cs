@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -39,7 +40,25 @@ namespace DiegoG.TelegramBot.Types
                 });
         }
 
-        public bool HasCommand(string cmd) => dict.ContainsKey(cmd);
+        public bool HasCommand(string cmd)
+        {
+            foreach (var x in dict.Keys.Reverse())
+                if (cmd.StartsWith(x))
+                    return true;
+            return false;
+        }
+
+        internal bool HasCommand(string cmd, [NotNullWhen(true)]out IBotCommand? command)
+        {
+            foreach (var x in dict.Keys.Reverse())
+                if (cmd.StartsWith(x))
+                {
+                    command = dict[x];
+                    return true;
+                }
+            command = null;
+            return false;
+        }
 
         public IEnumerator<IBotCommand> GetEnumerator()
         {
@@ -49,9 +68,9 @@ namespace DiegoG.TelegramBot.Types
 
         private void ThrowIfDuplicateOrInvalid(string cmd)
         {
-            if (HasCommand(cmd))
+            if (dict.ContainsKey(cmd))
                 throw new InvalidOperationException($"Duplicate command detected: {cmd}. Commands, Command Aliases, or General Aliases must be unique from one another and themselves");
-            if (cmd.Any(char.IsWhiteSpace))
+            if (!Cfg.AcceptMultiWordTriggers && cmd.Any(char.IsWhiteSpace))
                 throw new InvalidBotCommandException(cmd, "Command triggers or aliases cannot contain whitespace");
         }
 

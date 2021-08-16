@@ -52,7 +52,7 @@ namespace DiegoG.TelegramBot
 
             BotKey = key;
 
-            CommandList = new();
+            CommandList = new(Cfg);
 
             foreach (var c in TypeLoader.InstanceTypesWithAttribute<IBotCommand>(typeof(BotCommandAttribute),
                 ValidateCommandAttribute,
@@ -290,9 +290,11 @@ namespace DiegoG.TelegramBot
                 if (HeldCommands.ContainsKey(args.User))
                     return await ReplyCall(args);
 
-                var x = CommandList.HasCommand(args.Arguments[0]);
-
-                var cmd = CommandList.HasCommand(args.Arguments[0]) ? CommandList[args.Arguments[0]] : CommandList[DefaultName];
+                IBotCommand cmd;
+                {
+                    var cst = Cfg.AcceptMultiWordTriggers ? args.ArgString : args.Arguments[0];
+                    cmd = CommandList.HasCommand(cst, out var c) ? c : CommandList[DefaultName];
+                }
 
                 var t = cmd.Action(args);
                 CommandCalled?.Invoke(this, args);
