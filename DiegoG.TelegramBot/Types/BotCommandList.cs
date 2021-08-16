@@ -48,10 +48,30 @@ namespace DiegoG.TelegramBot.Types
             return false;
         }
 
-        internal bool HasCommand(string cmd, [NotNullWhen(true)]out IBotCommand? command)
+        internal bool HasCommand(string cmd, [NotNullWhen(true)] out IBotCommand? command)
+        {
+            var x = cmd.StartsWith('/');
+            if ((x && Cfg.CommandCaseSensitive) || (!x && Cfg.CaseSensitive))
+                return HasCommand_CaseSensitive(cmd, out command);
+            return HasCommand_CaseInsensitive(cmd.ToLower(), out command);
+        }
+
+        private bool HasCommand_CaseSensitive(string cmd, [NotNullWhen(true)] out IBotCommand? command)
         {
             foreach (var x in dict.Keys.Reverse())
                 if (cmd.StartsWith(x))
+                {
+                    command = dict[x];
+                    return true;
+                }
+            command = null;
+            return false;
+        }
+
+        private bool HasCommand_CaseInsensitive(string cmd, [NotNullWhen(true)] out IBotCommand? command)
+        {
+            foreach (var x in dict.Keys.Reverse())
+                if (cmd.StartsWith(x.ToLower()))
                 {
                     command = dict[x];
                     return true;
