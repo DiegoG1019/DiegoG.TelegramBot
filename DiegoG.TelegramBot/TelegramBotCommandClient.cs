@@ -226,7 +226,7 @@ namespace DiegoG.TelegramBot
             var command = msg.Text;
             try
             {
-                if (Cfg.ProcessNormalMessages || command.StartsWith("/"))
+                if (command != null && (Cfg.ProcessNormalMessages || command.StartsWith("/")))
                 {
                     command = command.Replace(BotHandle, "");
                     var cr = await Call(command, user, msg);
