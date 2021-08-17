@@ -231,8 +231,9 @@ namespace DiegoG.TelegramBot
                     command = command.Replace(BotHandle, "");
                     var cr = await Call(command, user, msg);
 
-                    foreach (var act in cr)
-                        MessageQueue.EnqueueAction(act);
+                    if(cr is not null)
+                        foreach (var act in cr)
+                            MessageQueue.EnqueueAction(act);
 
                     Log.Debug($"Command {command} from user {user} succesfully processed.");
                 }

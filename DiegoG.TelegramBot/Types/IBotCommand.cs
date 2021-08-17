@@ -85,16 +85,16 @@ namespace DiegoG.TelegramBot.Types
 
     public record CommandResponse
     {
-        public IEnumerable<BotAction> Actions { get; init; }
+        public IEnumerable<BotAction>? Actions { get; init; }
         public bool Hold { get; init; }
 
-        public void Deconstruct(out IEnumerable<BotAction> actions, out bool hold)
+        public void Deconstruct(out IEnumerable<BotAction>? actions, out bool hold)
         {
             hold = Hold;
             actions = Actions;
         }
 
-        public CommandResponse(bool hold = false, params BotAction[] actions)
+        public CommandResponse(bool hold = false, params BotAction[]? actions)
         {
             Hold = hold;
             Actions = actions;
