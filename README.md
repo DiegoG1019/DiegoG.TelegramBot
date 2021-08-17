@@ -35,6 +35,9 @@ This class integrates reflection-based command loading, API Request Queueing, as
  
   - `ProcessNormalMessages` states whether the bot should process all messages, or if false, only those starting with a `/`.
   - `AddBotMeCommandInfo` states whether the bot should automatically upload info about its commands to telegram 
+  - `AcceptMultiWordTriggers` states whether the bot should allow for triggers to have whitespace in them
+  - `CaseSensitive` states whether the bot should be case sensitive in the messages it receives
+  - `CommandCaseSensitive` states whether the bot should be case sensitive in the commands it receives
   
    ![AddBotMeCommandInfo Image Example](https://github.com/DiegoG1019/DiegoG.TelegramBot/blob/master/repo_assets/AddBotMeCommandInfo%20Image%20Example.png)
    
