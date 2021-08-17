@@ -119,6 +119,27 @@ namespace DiegoG.TelegramBot.Test
     }
 
     [BotCommand]
+    class NoResponse : Default
+    {
+        public override string Trigger => "/noresp";
+
+        public override Task<CommandResponse> Action(BotCommandArguments args)
+        {
+            return Task.FromResult(new CommandResponse(false, null));
+        }
+
+        public override Task<CommandResponse> ActionReply(BotCommandArguments args)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void Cancel(User user)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    [BotCommand]
     class CommandListMultiWordTestA : IBotCommand
     {
         public TelegramBotCommandClient Processor { get; set; }
