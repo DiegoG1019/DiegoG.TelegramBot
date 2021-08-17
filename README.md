@@ -113,7 +113,7 @@ public interface IBotCommand
 ```
 
 ```C#
-new CommandResponse(bool hold = false, params BotAction[] actions)
+new CommandResponse(bool hold = false, params BotAction[]? actions)
 new CommandResponse(Message msg, bool hold = false, params string[] messages)
 new CommandResponse(BotCommandArguments args, bool hold = false, params string[] messages)
 ```
@@ -132,7 +132,7 @@ public sealed record BotCommandArguments
 - `Processor` is the `TelegramBotCommandClient` this command's instance belongs to. It's automatically set by the Client upon loading, but due to limitations, it's freely settable. Please refrain from doing that.
 - `Action` It's the response issued by the bot upon the command being executed.
   - `bool hold` if this is set to true, it specifies to the command execution engine that all subsequent messages from that user forwarded to `ActionReply` until `ActionReply` returns `hold = false`. This can be used for multi-message conversations with the user, and it's used extensively by the `ChatBot` class (explained below)
-  - `params BotAction[] action` are the actions to be queued by the execution engine as soon as the command returns. They are executed in order.
+  - `params BotAction[] action` are the actions to be queued by the execution engine as soon as the command returns. They are executed in order. If `null`, no action will be executed, and the user will receive no response.
   - `params string[] Message` each of the strings here passed are translated into an array of `b => b.SendTextMessageAsync(msg.Chat.Id, m, replyToMessageId: msg.MessageId);` and stored. __`Message msg` or `BotCommandArguments args` are required for this__
 - `ActionReply` when `bool hold` is set to true by a previous `Action` or held true by `ActionReply` *all* messages by that specific user will be automatically forwarded to `ActionReply`. This is usually done to hold conversations with the user. The command is responsible for maintaining the conversation's state, and thus preferably, responsible for maintaining a way to obtain per-user state, such as the use of a `Dictionary<long, TContext>` using `User.Id` as the `long` key
 
