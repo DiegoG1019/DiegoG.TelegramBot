@@ -54,7 +54,8 @@ namespace DiegoG.TelegramBot
             return string.Format(HelpFormat, c.Trigger, GetAlias(c), c.HelpExplanation, c.HelpUsage, GetHelpExplanation(c));
         });
 
-        public Task<string> GetGlobalHelp() => Task.Run(() => Task.FromResult(string.Join("\n", Processor.CommandList.Where(s => s.Trigger is not TelegramBotCommandClient.DefaultName).Select(command => $"{command.Trigger}{GetAlias(command)} - {command.HelpUsage}"))));
+        public Task<string> GetGlobalHelp() 
+            => Task.Run(() => string.Join("\n", Processor.CommandList.Where(s => s.Trigger is not TelegramBotCommandClient.DefaultName).Select(command => $"{command.Trigger}{GetAlias(command)} - {command.HelpUsage ?? ""}")));
 
         public virtual Task<CommandResponse> ActionReply(BotCommandArguments args) => Task.FromResult(new CommandResponse(false));
 
