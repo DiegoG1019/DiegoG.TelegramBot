@@ -1,10 +1,9 @@
 ﻿using Telegram.Bot.Types;
 
-namespace DiegoG.TelegramBot.Types
+namespace DiegoG.TelegramBot.Types;
+
+public interface IChatSequenceContext
 {
-    public interface IChatSequenceContext
-    {
-        ChatSequence Sequence { get; set; }
-        User User { get; }
-    }
+    ChatSequence Sequence { get; set; }
+    User User { get; }
 }
